@@ -1,0 +1,7 @@
+---
+- name: Configure ec2 instance
+  hosts: ec2
+  become: true
+
+  roles:
+    - server

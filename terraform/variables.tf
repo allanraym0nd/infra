@@ -23,7 +23,7 @@ variable "alert_email" {
 variable "ami_id" {
   description = "Amazon Machine Image ID for EC2 instance"
   type        = string
-  default     = "ami-0c02fb55956c7d316" # Amazon Linux 2, us-east-1
+  default     = "ami-0453ec754f44f9a4a" # Amazon Linux 2, us-east-1
 }
 
 variable "instance_type" {

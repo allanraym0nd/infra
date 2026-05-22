@@ -85,30 +85,57 @@ resource "aws_cloudwatch_dashboard" "main" {
   dashboard_body = jsonencode({
     widgets = [
       {
-        type = "metric"
+        type   = "metric"
+        x      = 0
+        y      = 0
+        width  = 8
+        height = 6
         properties = {
-          title   = "CPU Utilization"
+          region  = var.aws_region
+          title   = "CPU Utilisation"
           metrics = [["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.main.id]]
           period  = 120
-          stats   = "Average"
+          stat    = "Average"
+          view    = "timeSeries"
+          annotations = {
+            horizontal = []
+          }
         }
       },
       {
-        type = "metric"
+        type   = "metric"
+        x      = 8
+        y      = 0
+        width  = 8
+        height = 6
         properties = {
+          region  = var.aws_region
           title   = "Disk Usage"
           metrics = [["CustomMetrics/EC2", "DiskUsage", "InstanceId", aws_instance.main.id]]
           period  = 120
           stat    = "Average"
+          view    = "timeSeries"
+          annotations = {
+            horizontal = []
+          }
         }
       },
       {
-        type = "metric"
+        type   = "metric"
+        x      = 16
+        y      = 0
+        width  = 8
+        height = 6
         properties = {
+          region  = var.aws_region
           title   = "Memory Usage"
           metrics = [["CustomMetrics/EC2", "MemoryUsage", "InstanceId", aws_instance.main.id]]
           period  = 120
           stat    = "Average"
+          view    = "timeSeries"
+          annotations = {
+            horizontal = []
+          }
         }
       }
     ]

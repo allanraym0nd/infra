@@ -6,28 +6,24 @@ resource "aws_iam_role" "ec2" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "sts:Assumerole"
+        Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
           Service = "ec2.amazonaws.com"
         }
       }
     ]
-
-    tags = {
-      Name = "${var.project_name}-ec2-role"
-    }
   })
 }
 
-# IAM Policy - least privilege, only what the script needs
+# IAM Policy - least privilege
 resource "aws_iam_policy" "ec2" {
   name        = "${var.project_name}-ec2-policy"
   description = "Allows EC2 to push custom metrics and logs to CloudWatch only"
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statetement = [
+    Statement = [
       {
         Effect = "Allow"
         Action = [
@@ -48,7 +44,6 @@ resource "aws_iam_policy" "ec2" {
       }
     ]
   })
-
 }
 
 # Attach Policy to Role

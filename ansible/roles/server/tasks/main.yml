@@ -1,0 +1,64 @@
+---
+- name: Update all packages
+  yum:
+    name: "*"
+    state: latest
+
+- name: Install Python3 and pip
+  yum:
+    name:
+      - python3
+      - python3-pip
+    state: present
+
+- name: Create non-root user
+  user:
+    name: appuser
+    shell: /bin/bash
+    create_home: yes
+
+- name: Install boto3
+  pip:
+    name: boto3
+    executable: pip3
+
+- name: Install psutil for system metrics
+  pip:
+    name: psutil
+    executable: pip3
+
+- name: Copy health report script
+  copy:
+    src: ../../../../scripts/health_report.py
+    dest: /home/appuser/health_report.py
+    owner: appuser
+    group: appuser
+    mode: "0755"
+
+- name: Harden SSH config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: "^PermitRootLogin", line: "PermitRootLogin no" }
+    - { regexp: "^PasswordAuthentication", line: "PasswordAuthentication no" }
+  notify: restart sshd
+
+- name: Install cronie
+  dnf:
+    name: cronie
+    state: present
+
+- name: Start and enable crond
+  service:
+    name: crond
+    state: started
+    enabled: yes
+
+- name: Set up cron job to run health report every 5 minutes
+  cron:
+    name: "health report"
+    user: appuser
+    minute: "*/5"
+    job: "python3 /home/appuser/health_report.py"
